@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertaobao/widget/LeftCategoryNav.dart';
+import '../service/service_method.dart';
+import 'dart:convert';
+import '../model/category.dart';
 
-class CategoryPage extends StatelessWidget{
+class CategoryPage extends StatefulWidget {
+  @override
+  _CategoryPageState createState() => _CategoryPageState();
+}
+
+class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
-      body: Center(
-        child: Text('分类'),
-      ),
+        appBar: AppBar(
+          title: Text('百姓生活+'),
+          centerTitle: true,
+        ),
+      body: LeftCategoryNav(),
     );
   }
 }
