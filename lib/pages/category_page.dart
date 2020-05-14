@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertaobao/widget/LeftCategoryNav.dart';
+import 'package:fluttertaobao/widget/RightCategoryNav.dart';
 import '../service/service_method.dart';
 import 'dart:convert';
 import '../model/category.dart';
@@ -17,7 +18,20 @@ class _CategoryPageState extends State<CategoryPage> {
           title: Text('百姓生活+'),
           centerTitle: true,
         ),
-      body: LeftCategoryNav(),
+      body: Container(
+        child: Row(
+          children: <Widget>[
+            LeftCategoryNav(),
+            Column(
+              children: <Widget>[
+                RightCategoryNav(),
+              ],
+            )
+          ],
+        ),
+      )
     );
   }
 }
+
+//

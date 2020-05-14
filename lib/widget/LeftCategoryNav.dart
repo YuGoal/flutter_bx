@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:fluttertaobao/model/category.dart';
+import 'package:fluttertaobao/provide/child_category.dart';
 import 'package:fluttertaobao/service/service_method.dart';
+import 'package:provider/provider.dart';
 
 class LeftCategoryNav extends StatefulWidget {
   @override
@@ -19,16 +22,17 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
     _getCategory();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: ScreenUtil().setWidth(180),
+      width: ScreenUtil().setWidth(200),
       decoration: BoxDecoration(
           border: Border(right: BorderSide(width: 1, color: Colors.black12))),
       child: ListView.builder(
         itemCount: list.length,
-        itemBuilder: (context,index){
-          return _leftInkWel(index);
+        itemBuilder: (context, index) {
+          return (_leftInkWel(index));
         },
       ),
     );
@@ -38,8 +42,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
   void _getCategory() async {
     await requestPost('getCategory').then((val) {
       var data = json.decode(val.toString());
-      CategoryBigListModel categoryBigListModelList =
-          CategoryBigListModel.formJson(data['data']);
+      Category categoryBigListModelList = Category.fromJson(data);
       setState(() {
         list = categoryBigListModelList.data;
       });
@@ -48,7 +51,10 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
   Widget _leftInkWel(int index) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        var childList = list[index].bxMallSubDto;
+        context.read<ChildCategory>().getChildCategory(childList);
+      },
       child: Container(
         height: ScreenUtil().setHeight(100),
         padding: EdgeInsets.only(left: 10, top: 20),

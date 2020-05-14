@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import "package:dio/dio.dart";
+import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'dart:io';
 import '../config/service_url.dart';
@@ -11,8 +12,6 @@ Future getHomePageBeloConten() async {
     print('开始获取下拉列表数据.................');
     Response response;
     Dio dio = new Dio();
-    dio.options.contentType =
-        ContentType.parse("application/x-www-form-urlencoded");
     int page = 1;
     response = await dio.post(servicePath['homePageBelowConten'], data: page);
     if (response.statusCode == 200) {
@@ -30,8 +29,6 @@ Future requestPost(url, {formData}) async {
   try {
     Response response;
     Dio dio = new Dio();
-    dio.options.contentType =
-        ContentType.parse("application/x-www-form-urlencoded");
     if (formData == null) {
       response = await dio.post(servicePath[url]);
     } else {

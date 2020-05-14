@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertaobao/pages/index_page.dart';
+import 'package:fluttertaobao/provide/child_category.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ChildCategory())
+        ],
+        child: MyApp(),
+      )
+  );
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -11,12 +22,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "百姓生活+",
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primaryColor: Colors.pink
-        ),
+        theme: ThemeData(primaryColor: Colors.pink),
         home: IndexPage(),
       ),
     );
   }
 }
-
