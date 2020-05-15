@@ -13,25 +13,23 @@ class RightCategoryNav extends StatefulWidget {
 class _RightCategoryNavState extends State<RightCategoryNav> {
   @override
   Widget build(BuildContext context) {
+    //获取Provider对象
+    var childcategory = Provider.of<ChildCategory>(context);
     return Container(
-      child: Consumer2<ChildCategory, int>(
-          builder: (BuildContext, ChildCategory counter, int textSize, _) =>
-              Container(
-                  width: ScreenUtil().setWidth(500),
-                  height: ScreenUtil().setWidth(80),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border:
-                      Border(
-                          bottom: BorderSide(width: 1, color: Colors.black12))),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: counter.childCategoryList.length,
-                    itemBuilder: (context, index) {
-                      return _rightInkWell(counter.childCategoryList[index]);
-                    },
-                  ))
-      ),
+      child: Container(
+          width: ScreenUtil().setWidth(500),
+          height: ScreenUtil().setWidth(80),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border:
+                  Border(bottom: BorderSide(width: 1, color: Colors.black12))),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: childcategory.childCategoryList.length,
+            itemBuilder: (context, index) {
+              return _rightInkWell(childcategory.childCategoryList[index]);
+            },
+          )),
     );
   }
 
