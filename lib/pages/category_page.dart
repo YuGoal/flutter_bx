@@ -15,7 +15,7 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('百姓生活+'),
+          title: Text('商品分类'),
           centerTitle: true,
         ),
       body: Container(

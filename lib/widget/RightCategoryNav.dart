@@ -17,7 +17,7 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
     var childcategory = Provider.of<ChildCategory>(context);
     return Container(
       child: Container(
-          width: ScreenUtil().setWidth(500),
+          width: ScreenUtil().setWidth(570),
           height: ScreenUtil().setWidth(80),
           decoration: BoxDecoration(
               color: Colors.white,
