@@ -1,11 +1,11 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fluttertaobao/service/service_method.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,6 +23,12 @@ class _HomePageState extends State<HomePage>
   List<Map> hotGoodsList = [];
 
   @override
+  void initState() {
+    _getHotGoods(); //获取火爆数据
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var formData = {'lon': '113.04054260253906', 'lat': '28.166854858398438'};
     return Scaffold(
@@ -37,6 +43,7 @@ class _HomePageState extends State<HomePage>
             if (snapshot.hasData) {
               //解析数据
               var data = json.decode(snapshot.data.toString());
+              log('home: data = '+data);
               List<Map> swiper = (data['data']['slides'] as List).cast();
               List<Map> navigatorList =
                   (data['data']['category'] as List).cast(); //类别列表
@@ -116,18 +123,15 @@ class _HomePageState extends State<HomePage>
   }
 
   //火爆专区标题
-  Widget hotTitle() {
-    return Container(
-      margin: EdgeInsets.only(top: 10.0),
-      padding: EdgeInsets.all(5.0),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border:
-              Border(bottom: BorderSide(width: 0.5, color: Colors.black12))),
-      child: Text('火爆专区'),
-    );
-  }
+  Widget hotTitle = Container(
+    margin: EdgeInsets.only(top: 10.0),
+    padding: EdgeInsets.all(5.0),
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(width: 0.5, color: Colors.black12))),
+    child: Text('火爆专区'),
+  );
 
   //火爆专区子项
   Widget _wrapList() {
@@ -182,12 +186,13 @@ class _HomePageState extends State<HomePage>
 
   //火爆专区组合
   Widget _hotGoods() {
-    return Column(
+    return Container(
+        child: Column(
       children: <Widget>[
-        hotTitle(),
+        hotTitle,
         _wrapList(),
       ],
-    );
+    ));
   }
 }
 

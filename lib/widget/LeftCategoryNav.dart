@@ -47,6 +47,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       });
       context.read<ChildCategory>().getChildCategory(list[0].bxMallSubDto);
     });
+
   }
 
   Widget _leftInkWel(int index) {
