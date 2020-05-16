@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fluttertaobao/service/service_method.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -64,8 +65,6 @@ class _HomePageState extends State<HomePage>
               List<Map> floor3 =
                   (data['data']['floor3'] as List).cast(); //楼层1商品和图片
 
-              _getHotGoods(); //获取火爆数据
-
               return SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
@@ -117,15 +116,18 @@ class _HomePageState extends State<HomePage>
   }
 
   //火爆专区标题
-  Widget hotTitle = Container(
-    margin: EdgeInsets.only(top: 10.0),
-    padding: EdgeInsets.all(5.0),
-    alignment: Alignment.center,
-    decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(width: 0.5, color: Colors.black12))),
-    child: Text('火爆专区'),
-  );
+  Widget hotTitle() {
+    return Container(
+      margin: EdgeInsets.only(top: 10.0),
+      padding: EdgeInsets.all(5.0),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border:
+              Border(bottom: BorderSide(width: 0.5, color: Colors.black12))),
+      child: Text('火爆专区'),
+    );
+  }
 
   //火爆专区子项
   Widget _wrapList() {
@@ -180,13 +182,12 @@ class _HomePageState extends State<HomePage>
 
   //火爆专区组合
   Widget _hotGoods() {
-    return Container(
-        child: Column(
+    return Column(
       children: <Widget>[
-        hotTitle,
+        hotTitle(),
         _wrapList(),
       ],
-    ));
+    );
   }
 }
 

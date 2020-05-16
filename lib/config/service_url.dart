@@ -3,4 +3,5 @@ const servicePath={
   'homePageContext': serviceUrl+'/baixing/wxmini/homePageContent', // 商家首页信息
   'homePageBelowConten': serviceUrl+'/baixing/wxmini/homePageBelowConten', //商城首页热卖商品拉取
   'getCategory': serviceUrl+'/baixing/wxmini/getCategory', //商品类别信息
+  'getMallGoods': serviceUrl+'wxmini/getMallGoods', //商品分类的商品列表
 };

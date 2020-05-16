@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertaobao/widget/LeftCategoryNav.dart';
 import 'package:fluttertaobao/widget/RightCategoryNav.dart';
-import '../service/service_method.dart';
-import 'dart:convert';
-import '../model/category.dart';
 
 class CategoryPage extends StatefulWidget {
   @override

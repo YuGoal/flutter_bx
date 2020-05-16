@@ -45,6 +45,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       setState(() {
         list = categoryBigListModelList.data;
       });
+      context.read<ChildCategory>().getChildCategory(list[0].bxMallSubDto);
     });
   }
 
@@ -63,7 +64,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         height: ScreenUtil().setHeight(100),
         padding: EdgeInsets.only(left: 10, top: 20),
         decoration: BoxDecoration(
-            color: isCheck ? Colors.black12 : Colors.white,
+            color: isCheck?Color.fromRGBO(236, 238, 239, 1.0):Colors.white,
             border:
                 Border(bottom: BorderSide(width: 1, color: Colors.black12))),
         child: Text(
