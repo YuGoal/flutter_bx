@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_easyrefresh/material_footer.dart';
+import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fluttertaobao/model/belowconten.dart';
@@ -22,14 +22,15 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 
-  int page = 1;
-
   //火爆专区数据
   List<dynamic> hotGoodsList = [];
 
   @override
   Widget build(BuildContext context) {
     var formData = {'lon': '113.04054260253906', 'lat': '28.166854858398438'};
+    int page = 1;
+
+
     return Scaffold(
         appBar: AppBar(
           title: Text('百姓生活+'),
@@ -65,6 +66,7 @@ class _HomePageState extends State<HomePage>
               List<dynamic> floor3 = homePage.data.floor3; //楼层1商品和图片
 
               return EasyRefresh(
+                header: MaterialHeader(),
                 footer: MaterialFooter(),
                 child: ListView(
                   children: <Widget>[
@@ -89,13 +91,38 @@ class _HomePageState extends State<HomePage>
                     _hotGoods(),
                   ],
                 ),
-                onLoad: () async {
-                  var formPage = {'page': page};
-                  await requestPost('homePageBelowConten', formData: formPage).then((val) {
+                onRefresh: () async {
+                  setState(() {
+                    page = 1;
+                    hotGoodsList.clear();
+                  });
+                  var formPage = {"page": page};
+                  print('火爆数据 页数：${page}');
+                  requestPost('homePageBelowConten', formData: formPage)
+                      .then((val) {
                     var data = json.decode(val.toString());
                     Belowconten belowconten = Belowconten.fromMap(data);
                     List<dynamic> newGoodsList = belowconten.data;
-                    if(newGoodsList.length>0){
+                    print('火爆数据 数据：${data}');
+                    if (newGoodsList.length > 0) {
+                      setState(() {
+                        hotGoodsList.addAll(newGoodsList);
+                        page++;
+                      });
+                    }
+                  });
+                },
+                onLoad: () async {
+                  //todo 上拉加载数据一直是第一页 需要解决
+                  var formPage = {"page": page};
+                  print('火爆数据 页数：${page}');
+                  requestPost('homePageBelowConten', formData: formPage)
+                      .then((val) {
+                    var data = json.decode(val.toString());
+                    Belowconten belowconten = Belowconten.fromMap(data);
+                    List<dynamic> newGoodsList = belowconten.data;
+                    print('火爆数据 数据：${data}');
+                    if (newGoodsList.length > 0) {
                       setState(() {
                         hotGoodsList.addAll(newGoodsList);
                         page++;
@@ -193,7 +220,7 @@ class _HomePageState extends State<HomePage>
 
 //首页轮播插件
 class SwiperDiy extends StatelessWidget {
-  final List<SlidesBean>  swiperDataList;
+  final List<SlidesBean> swiperDataList;
 
   SwiperDiy({this.swiperDataList});
 
@@ -224,7 +251,7 @@ class TopNavigator extends StatelessWidget {
 
   TopNavigator({Key key, this.navigatorList}) : super(key: key);
 
-  Widget _gridViewItemUI(BuildContext context,CategoryBean item) {
+  Widget _gridViewItemUI(BuildContext context, CategoryBean item) {
     return InkWell(
       onTap: () {
         print('点击了导航');

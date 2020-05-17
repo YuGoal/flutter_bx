@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertaobao/pages/index_page.dart';
+import 'package:fluttertaobao/provide/CategoryGoodsListProvide.dart';
 import 'package:fluttertaobao/provide/child_category.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +8,8 @@ void main() {
   runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => ChildCategory())
+          ChangeNotifierProvider(create: (_) => ChildCategory()),
+          ChangeNotifierProvider(create: (_) => CategoryGoodsListProvide())
         ],
         child: MyApp(),
       )

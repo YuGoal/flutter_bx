@@ -15,6 +15,7 @@ Future requestPost(url, {formData}) async {
     } else {
       response = await dio.post(servicePath[url], data: formData);
     }
+    print(formData);
     if (200 == response.statusCode) {
       return response.data;
     } else {

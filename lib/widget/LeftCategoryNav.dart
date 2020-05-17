@@ -60,6 +60,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         });
         var childList = list[index].bxMallSubDto;
         context.read<ChildCategory>().getChildCategory(childList);
+
       },
       child: Container(
         height: ScreenUtil().setHeight(100),

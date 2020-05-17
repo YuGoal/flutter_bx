@@ -12,7 +12,6 @@ class ChildCategory  with ChangeNotifier{
     all.comments = 'null';
     childCategoryList=[all];
     childCategoryList.addAll(list);
-    childCategoryList=list;
     notifyListeners();
   }
 }
