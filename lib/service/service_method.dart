@@ -10,7 +10,6 @@ Future requestPost(url, {formData}) async {
   try {
     Response response;
     Dio dio = new Dio();
-    log('url'+servicePath[url]);
     if (formData == null) {
       response = await dio.post(servicePath[url]);
     } else {

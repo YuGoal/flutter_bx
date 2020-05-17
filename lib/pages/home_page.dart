@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_easyrefresh/material_footer.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fluttertaobao/model/belowconten.dart';
@@ -22,12 +26,6 @@ class _HomePageState extends State<HomePage>
 
   //火爆专区数据
   List<dynamic> hotGoodsList = [];
-
-  @override
-  void initState() {
-    _getHotGoods(); //获取火爆数据
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +64,9 @@ class _HomePageState extends State<HomePage>
               List<dynamic> floor2 = homePage.data.floor2; //楼层1商品和图片
               List<dynamic> floor3 = homePage.data.floor3; //楼层1商品和图片
 
-              return SingleChildScrollView(
-                child: Column(
+              return EasyRefresh(
+                footer: MaterialFooter(),
+                child: ListView(
                   children: <Widget>[
                     SwiperDiy(
                       swiperDataList: swiper,
@@ -90,6 +89,20 @@ class _HomePageState extends State<HomePage>
                     _hotGoods(),
                   ],
                 ),
+                onLoad: () async {
+                  var formPage = {'page': page};
+                  await requestPost('homePageBelowConten', formData: formPage).then((val) {
+                    var data = json.decode(val.toString());
+                    Belowconten belowconten = Belowconten.fromMap(data);
+                    List<dynamic> newGoodsList = belowconten.data;
+                    if(newGoodsList.length>0){
+                      setState(() {
+                        hotGoodsList.addAll(newGoodsList);
+                        page++;
+                      });
+                    }
+                  });
+                },
               );
             } else {
               return Container(
@@ -101,20 +114,6 @@ class _HomePageState extends State<HomePage>
             }
           },
         ));
-  }
-
-  //获取火爆专区数据
-  void _getHotGoods() {
-    var formPage = {'page': page};
-    requestPost('homePageBelowConten', formData: formPage).then((val) {
-      var data = json.decode(val.toString());
-      Belowconten belowconten = Belowconten.fromMap(data);
-      List<dynamic> newGoodsList = belowconten.data;
-      setState(() {
-        hotGoodsList.addAll(newGoodsList);
-        page++;
-      });
-    });
   }
 
   //火爆专区标题
@@ -248,6 +247,7 @@ class TopNavigator extends StatelessWidget {
       height: ScreenUtil().setHeight(175),
       padding: EdgeInsets.all(3.0),
       child: GridView.count(
+        physics: NeverScrollableScrollPhysics(),
         crossAxisCount: 4,
         padding: EdgeInsets.all(5),
         children: navigatorList.map((item) {
@@ -290,7 +290,6 @@ class LeaderPhone extends StatelessWidget {
   }
 
   void _launchURL() async {
-    //todo 调起电话报错
     String url = 'tel:' + leaderPhone;
     print(url);
     if (await canLaunch(url)) {
