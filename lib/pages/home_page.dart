@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:fluttertaobao/model/belowconten.dart';
+import 'package:fluttertaobao/model/homepage.dart';
 import 'package:fluttertaobao/service/service_method.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage>
   int page = 1;
 
   //火爆专区数据
-  List<Map> hotGoodsList = [];
+  List<dynamic> hotGoodsList = [];
 
   @override
   void initState() {
@@ -43,34 +44,27 @@ class _HomePageState extends State<HomePage>
             if (snapshot.hasData) {
               //解析数据
               var data = json.decode(snapshot.data.toString());
-              log('home: data = '+data);
-              List<Map> swiper = (data['data']['slides'] as List).cast();
-              List<Map> navigatorList =
-                  (data['data']['category'] as List).cast(); //类别列表
+              HomepageModel homePage = HomepageModel.fromMap(data);
+              List<SlidesBean> swiper = homePage.data.slides;
+              List<CategoryBean> navigatorList = homePage.data.category; //类别列表
               if (navigatorList.length > 4) {
                 navigatorList.removeRange(4, navigatorList.length);
               }
               String advertesPicture =
-                  data['data']['advertesPicture']['PICTURE_ADDRESS']; //广告图片
-              String leaderImage =
-                  data['data']['shopInfo']['leaderImage']; //店长图片
-              String leaderPhone =
-                  data['data']['shopInfo']['leaderPhone']; //店长电话
-              List<Map> recommendList =
-                  (data['data']['recommend'] as List).cast(); // 商品推荐
+                  homePage.data.advertesPicture.PICTUREADDRESS; //广告图片
+              String leaderImage = homePage.data.shopInfo.leaderImage; //店长图片
+              String leaderPhone = homePage.data.shopInfo.leaderPhone; //店长电话
+              List<RecommendBean> recommendList =
+                  homePage.data.recommend; //商品推荐
 
               String floor1Title =
-                  data['data']['floor1Pic']['PICTURE_ADDRESS']; //楼层1的标题图片
-              String floor2Title =
-                  data['data']['floor2Pic']['PICTURE_ADDRESS']; //楼层1的标题图片
-              String floor3Title =
-                  data['data']['floor3Pic']['PICTURE_ADDRESS']; //楼层1的标题图片
-              List<Map> floor1 =
-                  (data['data']['floor1'] as List).cast(); //楼层1商品和图片
-              List<Map> floor2 =
-                  (data['data']['floor2'] as List).cast(); //楼层1商品和图片
-              List<Map> floor3 =
-                  (data['data']['floor3'] as List).cast(); //楼层1商品和图片
+                  homePage.data.floor1Pic.PICTUREADDRESS; //楼层1的标题图片
+              String floor2Title = homePage.data.floor2Pic.PICTUREADDRESS;
+
+              String floor3Title = homePage.data.floor3Pic.PICTUREADDRESS;
+              List<dynamic> floor1 = homePage.data.floor1; //楼层1商品和图片
+              List<dynamic> floor2 = homePage.data.floor2; //楼层1商品和图片
+              List<dynamic> floor3 = homePage.data.floor3; //楼层1商品和图片
 
               return SingleChildScrollView(
                 child: Column(
@@ -114,7 +108,8 @@ class _HomePageState extends State<HomePage>
     var formPage = {'page': page};
     requestPost('homePageBelowConten', formData: formPage).then((val) {
       var data = json.decode(val.toString());
-      List<Map> newGoodsList = (data['data'] as List).cast();
+      Belowconten belowconten = Belowconten.fromMap(data);
+      List<dynamic> newGoodsList = belowconten.data;
       setState(() {
         hotGoodsList.addAll(newGoodsList);
         page++;
@@ -142,18 +137,19 @@ class _HomePageState extends State<HomePage>
             print('object');
           },
           child: Container(
-            width: ScreenUtil().setWidth(372),
+            alignment: Alignment.center,
+            width: ScreenUtil().setWidth(360),
             color: Colors.white,
             padding: EdgeInsets.all(5.0),
             margin: EdgeInsets.only(bottom: 3.0),
             child: Column(
               children: <Widget>[
                 Image.network(
-                  val['image'],
+                  val.image,
                   width: ScreenUtil().setWidth(375),
                 ),
                 Text(
-                  val['name'],
+                  val.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -161,9 +157,9 @@ class _HomePageState extends State<HomePage>
                 ),
                 Row(
                   children: <Widget>[
-                    Text('￥${val['mallPrice']}'),
+                    Text('￥${val.mallPrice}'),
                     Text(
-                      '￥${val['price']}',
+                      '￥${val.price}',
                       style: TextStyle(
                           color: Colors.black26,
                           decoration: TextDecoration.lineThrough),
@@ -198,7 +194,7 @@ class _HomePageState extends State<HomePage>
 
 //首页轮播插件
 class SwiperDiy extends StatelessWidget {
-  final List swiperDataList;
+  final List<SlidesBean>  swiperDataList;
 
   SwiperDiy({this.swiperDataList});
 
@@ -211,7 +207,7 @@ class SwiperDiy extends StatelessWidget {
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
           return Image.network(
-            "${swiperDataList[index]['image']}",
+            "${swiperDataList[index].image}",
             fit: BoxFit.fill,
           );
         },
@@ -225,11 +221,11 @@ class SwiperDiy extends StatelessWidget {
 
 //导航区域
 class TopNavigator extends StatelessWidget {
-  final List navigatorList;
+  final List<CategoryBean> navigatorList;
 
   TopNavigator({Key key, this.navigatorList}) : super(key: key);
 
-  Widget _gridViewItemUI(BuildContext context, item) {
+  Widget _gridViewItemUI(BuildContext context,CategoryBean item) {
     return InkWell(
       onTap: () {
         print('点击了导航');
@@ -237,10 +233,10 @@ class TopNavigator extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Image.network(
-            item['image'],
+            item.image,
             width: ScreenUtil().setWidth(95),
           ),
-          Text(item['mallCategoryName'])
+          Text(item.mallCategoryName)
         ],
       ),
     );
@@ -307,7 +303,7 @@ class LeaderPhone extends StatelessWidget {
 
 //商品推荐
 class Recommend extends StatelessWidget {
-  final List recommendList;
+  final List<RecommendBean> recommendList;
 
   Recommend({Key key, this.recommendList}) : super(key: key);
 
@@ -349,10 +345,10 @@ class Recommend extends StatelessWidget {
                   Border(left: BorderSide(width: 0.5, color: Colors.black12))),
           child: Column(
             children: <Widget>[
-              Image.network(recommendList[index]['image']),
-              Text('￥${recommendList[index]['mallPrice']}'),
+              Image.network(recommendList[index].image),
+              Text('￥${recommendList[index].mallPrice}'),
               Text(
-                '￥${recommendList[index]['price']}',
+                '￥${recommendList[index].price}',
                 style: TextStyle(
                     decoration: TextDecoration.lineThrough, color: Colors.grey),
               )
@@ -390,7 +386,7 @@ class FloorTitle extends StatelessWidget {
 
 //楼层商品组件
 class FloorContent extends StatelessWidget {
-  final List floorGoodsList;
+  final List<dynamic> floorGoodsList;
 
   FloorContent({Key key, this.floorGoodsList}) : super(key: key);
 
@@ -403,14 +399,14 @@ class FloorContent extends StatelessWidget {
     );
   }
 
-  Widget _goodsItem(Map goods) {
+  Widget _goodsItem(dynamic goods) {
     return Container(
       width: ScreenUtil().setWidth(375),
       child: InkWell(
         onTap: () {
           print('点击了楼层商品');
         },
-        child: Image.network(goods['image']),
+        child: Image.network(goods.image),
       ),
     );
   }
