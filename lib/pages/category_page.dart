@@ -17,6 +17,7 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, width: 750, height: 1334, allowFontScaling: false);
     return Scaffold(
         appBar: AppBar(
           title: Text('商品分类'),
@@ -128,7 +129,7 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
     return Container(
       child: Container(
           width: ScreenUtil().setWidth(550),
-          height: ScreenUtil().setWidth(80),
+          height: ScreenUtil().setHeight(80),
           decoration: BoxDecoration(
               color: Colors.white,
               border:
