@@ -97,6 +97,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         //var mallSubId = list[index].mallSubId;
         var categoryId = list[index].mallCategoryId;
         _getGoodList(categoryId: categoryId);
+
+
         var childList = list[index].bxMallSubDto;
         context.read<ChildCategory>().getChildCategory(childList);
       },
