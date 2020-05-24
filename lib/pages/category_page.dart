@@ -58,7 +58,6 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
   @override
   Widget build(BuildContext context) {
-    _CategoryGoodsListState goodsListState = new _CategoryGoodsListState();
     return Container(
       width: ScreenUtil().setWidth(180),
       decoration: BoxDecoration(
@@ -66,7 +65,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       child: ListView.builder(
         itemCount: list.length,
         itemBuilder: (context, index) {
-          return (_leftInkWel(goodsListState, index));
+          return (_leftInkWel(index));
         },
       ),
     );
@@ -84,7 +83,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
     });
   }
 
-  Widget _leftInkWel(_CategoryGoodsListState goodsListState, int index) {
+  Widget _leftInkWel(int index) {
     bool isCheck = false;
     isCheck = (index == checkIndex) ? true : false;
 
@@ -96,8 +95,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
         //var mallSubId = list[index].mallSubId;
         var categoryId = list[index].mallCategoryId;
-        _getGoodList(categoryId: categoryId);
-
+        _getGoodList(categoryId: categoryId,);
 
         var childList = list[index].bxMallSubDto;
         context.read<ChildCategory>().getChildCategory(childList);
@@ -108,7 +106,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         decoration: BoxDecoration(
             color: isCheck ? Color.fromRGBO(236, 238, 239, 1.0) : Colors.white,
             border:
-            Border(bottom: BorderSide(width: 1, color: Colors.black12))),
+                Border(bottom: BorderSide(width: 1, color: Colors.black12))),
         child: Text(
           list[index].mallCategoryName,
           style: TextStyle(fontSize: ScreenUtil().setSp(28)),
@@ -116,6 +114,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       ),
     );
   }
+
   //得到商品列表数据
   void _getGoodList({String categoryId, String categorySubId}) async {
     var data = {
@@ -127,8 +126,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
     await requestPost('getMallGoods', formData: data).then((val) {
       var data = json.decode(val.toString());
       Mallgoods mallgoods = Mallgoods.fromMap(data);
-      Provider.of<CategoryGoodsListProvide>(context, listen: false).getGoodsList(
-          mallgoods.data);
+      Provider.of<CategoryGoodsListProvide>(context, listen: false)
+          .getGoodsList(mallgoods.data);
       // context.read<CategoryGoodsListProvide>().getGoodsList(mallgoods.data);
     });
   }
@@ -153,25 +152,34 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
           decoration: BoxDecoration(
               color: Colors.white,
               border:
-              Border(bottom: BorderSide(width: 1, color: Colors.black12))),
+                  Border(bottom: BorderSide(width: 1, color: Colors.black12))),
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: childcategory.childCategoryList.length,
             itemBuilder: (context, index) {
-              return _rightInkWell(childcategory.childCategoryList[index]);
+              return _rightInkWell(
+                  index, childcategory.childCategoryList[index]);
             },
           )),
     );
   }
 
-  Widget _rightInkWell(BxMallSubDtoListBean item) {
+  Widget _rightInkWell(int index, BxMallSubDtoListBean item) {
+    bool isCheck =
+        (index == Provider.of<CategoryGoodsListProvide>(context).childIndex)
+            ? true
+            : false;
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        context.read<CategoryGoodsListProvide>().changeChildIndex(index);
+      },
       child: Container(
         padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
         child: Text(
           item.mallSubName,
-          style: TextStyle(fontSize: ScreenUtil().setSp(28)),
+          style: TextStyle(
+              fontSize: ScreenUtil().setSp(28),
+              color: isCheck ? Colors.pink : Colors.black),
         ),
       ),
     );
@@ -187,7 +195,7 @@ class CategoryGoodsList extends StatefulWidget {
 class _CategoryGoodsListState extends State<CategoryGoodsList> {
   @override
   void initState() {
-   // _getGoodList();
+    // _getGoodList();
     super.initState();
   }
 
@@ -195,17 +203,16 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   Widget build(BuildContext context) {
     //获取Provider对象
     var goodsList = Provider.of<CategoryGoodsListProvide>(context);
-    return Container(
-        width: ScreenUtil().setWidth(570),
-        height: ScreenUtil().setHeight(1000),
-        child: ListView.builder(
-          itemCount: goodsList.goodsList.length,
-          itemBuilder: (context, index) {
-            CategoryListData categoryListData =   goodsList.goodsList[index];
-            print('good = '+categoryListData.goodsName);
-            return (_ListWidget(goodsList.goodsList[index]));
-          },
-        ));
+    return Expanded(
+        child: Container(
+            width: ScreenUtil().setWidth(570),
+            child: ListView.builder(
+              itemCount: goodsList.goodsList.length,
+              itemBuilder: (context, index) {
+                CategoryListData categoryListData = goodsList.goodsList[index];
+                return (_ListWidget(goodsList.goodsList[index]));
+              },
+            )));
   }
 
   Widget _goodsImage(CategoryListData categoryListData) {
@@ -259,7 +266,7 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
         decoration: BoxDecoration(
             color: Colors.white,
             border:
-            Border(bottom: BorderSide(width: 1.0, color: Colors.black12))),
+                Border(bottom: BorderSide(width: 1.0, color: Colors.black12))),
         child: Row(
           children: <Widget>[
             _goodsImage(categoryListData),
@@ -274,6 +281,4 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
       ),
     );
   }
-
-
 }
