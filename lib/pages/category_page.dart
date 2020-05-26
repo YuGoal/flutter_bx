@@ -172,6 +172,9 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
     return InkWell(
       onTap: () {
         context.read<CategoryGoodsListProvide>().changeChildIndex(index);
+        var categoryId = item.mallCategoryId;
+        var categorySubId = item.mallSubId;
+        _getGoodList(categoryId: categoryId,categorySubId: categorySubId);
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -184,6 +187,24 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
       ),
     );
   }
+
+  //得到商品列表数据
+  void _getGoodList({String categoryId, String categorySubId}) async {
+    var data = {
+      'categoryId': categoryId == null ? '4' : categoryId,
+      'categorySubId': categorySubId == null ? '' : categorySubId,
+      'page': 1
+    };
+    print(data.toString());
+    await requestPost('getMallGoods', formData: data).then((val) {
+      var data = json.decode(val.toString());
+      Mallgoods mallgoods = Mallgoods.fromMap(data);
+      Provider.of<CategoryGoodsListProvide>(context, listen: false)
+          .getGoodsList(mallgoods.data);
+      // context.read<CategoryGoodsListProvide>().getGoodsList(mallgoods.data);
+    });
+  }
+
 }
 
 //商品列表
