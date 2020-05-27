@@ -6,6 +6,7 @@ import 'package:fluttertaobao/model/category.dart';
 import 'package:fluttertaobao/model/mallgoods.dart';
 import 'package:fluttertaobao/provide/CategoryGoodsListProvide.dart';
 import 'package:fluttertaobao/provide/child_category.dart';
+import 'package:fluttertaobao/routers/application.dart';
 import 'package:fluttertaobao/service/service_method.dart';
 import 'package:provider/provider.dart';
 
@@ -95,7 +96,9 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
         //var mallSubId = list[index].mallSubId;
         var categoryId = list[index].mallCategoryId;
-        _getGoodList(categoryId: categoryId,);
+        _getGoodList(
+          categoryId: categoryId,
+        );
 
         var childList = list[index].bxMallSubDto;
         context.read<ChildCategory>().getChildCategory(childList);
@@ -174,7 +177,7 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
         context.read<CategoryGoodsListProvide>().changeChildIndex(index);
         var categoryId = item.mallCategoryId;
         var categorySubId = item.mallSubId;
-        _getGoodList(categoryId: categoryId,categorySubId: categorySubId);
+        _getGoodList(categoryId: categoryId, categorySubId: categorySubId);
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -199,12 +202,15 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
     await requestPost('getMallGoods', formData: data).then((val) {
       var data = json.decode(val.toString());
       Mallgoods mallgoods = Mallgoods.fromMap(data);
-      Provider.of<CategoryGoodsListProvide>(context, listen: false)
-          .getGoodsList(mallgoods.data);
-      // context.read<CategoryGoodsListProvide>().getGoodsList(mallgoods.data);
+      if (mallgoods.data.length > 0) {
+        Provider.of<CategoryGoodsListProvide>(context, listen: false)
+            .getGoodsList(mallgoods.data);
+      } else {
+        Provider.of<CategoryGoodsListProvide>(context, listen: false)
+            .getGoodsList([]);
+      }
     });
   }
-
 }
 
 //商品列表
@@ -281,7 +287,10 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
 
   Widget _ListWidget(CategoryListData categoryListData) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Application.router
+            .navigateTo(context, "/detailsPage?id=${categoryListData.goodsId}");
+      },
       child: Container(
         padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
         decoration: BoxDecoration(
