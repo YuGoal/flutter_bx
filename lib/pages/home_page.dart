@@ -11,6 +11,7 @@ import 'package:fluttertaobao/model/belowconten.dart';
 import 'package:fluttertaobao/model/homepage.dart';
 import 'package:fluttertaobao/service/service_method.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:fluttertaobao/routers/application.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,7 +30,6 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     var formData = {'lon': '113.04054260253906', 'lat': '28.166854858398438'};
     int page = 1;
-
 
     return Scaffold(
         appBar: AppBar(
@@ -210,11 +210,11 @@ class _HomePageState extends State<HomePage>
   Widget _hotGoods() {
     return Container(
         child: Column(
-      children: <Widget>[
-        hotTitle,
-        _wrapList(),
-      ],
-    ));
+          children: <Widget>[
+            hotTitle,
+            _wrapList(),
+          ],
+        ));
   }
 }
 
@@ -231,6 +231,10 @@ class SwiperDiy extends StatelessWidget {
       height: ScreenUtil().setHeight(333),
       width: ScreenUtil().setWidth(750),
       child: Swiper(
+        onTap: (int index) {
+          Application.router.navigateTo(
+              context, "/detailsPage?id=${swiperDataList[index].goodsId}");
+          },
         itemBuilder: (BuildContext context, int index) {
           return Image.network(
             "${swiperDataList[index].image}",
@@ -253,9 +257,7 @@ class TopNavigator extends StatelessWidget {
 
   Widget _gridViewItemUI(BuildContext context, CategoryBean item) {
     return InkWell(
-      onTap: () {
-        print('点击了导航');
-      },
+      onTap: () {},
       child: Column(
         children: <Widget>[
           Image.network(
@@ -330,11 +332,13 @@ class LeaderPhone extends StatelessWidget {
 //商品推荐
 class Recommend extends StatelessWidget {
   final List<RecommendBean> recommendList;
+  BuildContext buildContext;
 
   Recommend({Key key, this.recommendList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    buildContext = context;
     return Container(
       height: ScreenUtil().setHeight(400),
       margin: EdgeInsets.only(top: 10.0),
@@ -352,7 +356,7 @@ class Recommend extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           border:
-              Border(bottom: BorderSide(width: 0.5, color: Colors.black12))),
+          Border(bottom: BorderSide(width: 0.5, color: Colors.black12))),
       child: Text('商品推荐', style: TextStyle(color: Colors.pink)),
     );
   }
@@ -360,7 +364,10 @@ class Recommend extends StatelessWidget {
   //商品单独项
   Widget _item(index) {
     return InkWell(
-        onTap: () {},
+        onTap: () {
+          Application.router.navigateTo(
+              buildContext, "/detailsPage?id=${recommendList[index].goodsId}");
+        },
         child: Container(
           height: ScreenUtil().setHeight(330),
           width: ScreenUtil().setWidth(250),
@@ -368,7 +375,7 @@ class Recommend extends StatelessWidget {
           decoration: BoxDecoration(
               color: Colors.white,
               border:
-                  Border(left: BorderSide(width: 0.5, color: Colors.black12))),
+              Border(left: BorderSide(width: 0.5, color: Colors.black12))),
           child: Column(
             children: <Widget>[
               Image.network(recommendList[index].image),
@@ -413,11 +420,13 @@ class FloorTitle extends StatelessWidget {
 //楼层商品组件
 class FloorContent extends StatelessWidget {
   final List<dynamic> floorGoodsList;
+  BuildContext buildContext;
 
   FloorContent({Key key, this.floorGoodsList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    buildContext = context;
     return Container(
       child: Column(
         children: <Widget>[_firstRow(), _otherGoods()],
@@ -430,7 +439,8 @@ class FloorContent extends StatelessWidget {
       width: ScreenUtil().setWidth(375),
       child: InkWell(
         onTap: () {
-          print('点击了楼层商品');
+          Application.router
+              .navigateTo(buildContext, "/detailsPage?id=${goods.goodsId}");
         },
         child: Image.network(goods.image),
       ),
